@@ -29,6 +29,13 @@
    {:collection (:filter-collection db)
     :query      (:filter-query db)}))
 
+;; -- Labels -------------------------------------------------------------------
+
+(re-frame/reg-sub
+ :labels
+ (fn [db _]
+   (:labels db)))
+
 ;; -- Print options ------------------------------------------------------------
 
 (re-frame/reg-sub

@@ -44,11 +44,12 @@
 (deftask dev
   "Build and setup development environment."
   []
-  (comp (speak)
+  (comp (watch)
+        (speak)
         (cljs-repl :ids #{"js/renderer"})
         (reload :ids #{"js/renderer"}
                 :ws-host "localhost"
-                :on-jsload 'backstage-labels.renderer/init)
+                :target-path "target")
         (build-renderer)
         (build-main)
         (target)))

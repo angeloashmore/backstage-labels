@@ -5,9 +5,11 @@
 ;; --------------------
 
 (defn home-panel []
-  (let [failed (re-frame/subscribe [:failed])]
+  (let [failed (re-frame/subscribe [:failed])
+        labels (re-frame/subscribe [:labels])]
     (fn []
       [:div (str "Did the app fail? " @failed)
+       [:div (str "How many labels? " (count @labels))]
        [:div [:a {:href (routes/url-for :about)} "go to About Page"]]])))
 
 (defn about-panel []
