@@ -10,9 +10,9 @@
         (not (empty? (:labels db))))))
 
 (re-frame/reg-sub
- :name
+ :failed
  (fn [db]
-   (:name db)))
+   (:failed db)))
 
 ;; -- Routing ------------------------------------------------------------------
 
