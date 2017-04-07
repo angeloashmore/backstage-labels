@@ -1,7 +1,6 @@
 (ns backstage-labels.core
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [re-frisk.core :refer [enable-re-frisk!]]
             [backstage-labels.events]
             [backstage-labels.subs]
             [backstage-labels.routes :as routes]
@@ -10,7 +9,6 @@
 
 (defn dev-setup []
   (when config/debug?
-    (enable-re-frisk!)
     (enable-console-print!)
     (println "dev mode")))
 

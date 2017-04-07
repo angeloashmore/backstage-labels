@@ -13,7 +13,7 @@
    :rules [{:when :seen?        :events :request-db-release-success  :dispatch-n (list [:request-labels] [:request-collections])}
            {:when :seen?        :events :request-labels-success      :dispatch   [:set-labels]}
            {:when :seen?        :events :request-collections-success :dispatch   [:set-collections]}
-           {:when :seen-any-of? :events [:request-db-release-failure :request-labels-failure :request-collections-failure] :dispatch [:fail] :halt? true}]})
+           {:when :seen-any-of? :events [:request-db-release-failure :request-labels-failure :request-collections-failure] :dispatch [:boot-failure] :halt? true}]})
 
 (defn- set-initial-loading
   [db]
@@ -29,7 +29,7 @@
     :async-flow (boot-flow)}))
 
 (re-frame/reg-event-db
- :fail
+ :boot-failure
  (fn [db _]
    (assoc db :failed true)))
 
