@@ -1,3 +1,0 @@
-{:require  [backstage-labels.core]
- :init-fns [backstage-labels.core/init]
- :compiler-options {:asset-path "js/app.out"}}

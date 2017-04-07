@@ -4,7 +4,6 @@
  :dependencies '[[adzerk/boot-cljs            "2.0.0"      :scope "test"]
                  [adzerk/boot-cljs-repl       "0.3.3"      :scope "test"]
                  [adzerk/boot-reload          "0.5.1"      :scope "test"]
-                 [pandeiro/boot-http          "0.7.6"      :scope "test"]
                  [com.cemerick/piggieback     "0.2.1"      :scope "test"]
                  [org.clojure/tools.nrepl     "0.2.12"     :scope "test"]
                  [weasel                      "0.7.0"      :scope "test"]
@@ -14,39 +13,51 @@
                  [day8.re-frame/async-flow-fx "0.0.6"]
                  [day8.re-frame/http-fx       "0.1.3"]
                  [bidi                        "2.0.16"]
-                 [kibu/pushy                  "0.3.7"]])
+                 [kibu/pushy                  "0.3.7"]
+                 [re-frisk                    "0.4.4"]])
 
 (require
  '[adzerk.boot-cljs      :refer [cljs]]
  '[adzerk.boot-cljs-repl :refer [cljs-repl start-repl]]
- '[adzerk.boot-reload    :refer [reload]]
- '[pandeiro.boot-http    :refer [serve]])
+ '[adzerk.boot-reload    :refer [reload]])
 
-(deftask build []
-  (comp (speak)
+(deftask build-main
+  "Build main entry point for debug."
+  []
+  (comp (cljs :ids #{"js/main"}
+              :compiler-options {:closure-defines {'backstage-labels.main/dev? true}
+                                 :asset-path "target/js/main.out"})))
 
-        (cljs)
-        ))
+(deftask build-renderer
+  "Build renderer entry point for debug."
+  []
+  (comp (cljs :ids #{"js/renderer"}
+              :compiler-options {:asset-path "js/renderer.out"})))
 
-(deftask run []
-  (comp (serve)
-        (watch)
-        (cljs-repl)
-
-        (reload)
-        (build)))
-
-(deftask production []
-  (task-options! cljs {:optimizations :advanced})
-  identity)
-
-(deftask development []
-  (task-options! cljs {:optimizations :none}
-                 reload {:on-jsload 'backstage-labels.core/init})
-  identity)
+(deftask debug
+  "Debug build."
+  []
+  (comp (build-main)
+        (build-renderer)
+        (target)))
 
 (deftask dev
-  "Simple alias to run application in development mode"
+  "Build and setup development environment."
   []
-  (comp (development)
-        (run)))
+  (comp (speak)
+        (cljs-repl :ids #{"js/renderer"})
+        (reload :ids #{"js/renderer"}
+                :ws-host "localhost"
+                :on-jsload 'backstage-labels.renderer/init)
+        (build-renderer)
+        (build-main)
+        (target)))
+
+(deftask release
+  "Release build."
+  []
+  (comp (cljs :ids #{"js/main"}
+              :optimizations :simple)
+        (cljs :ids #{"js/renderer"}
+              :optimizations :advanced)
+        (target :dir #{"release"})))

@@ -11,8 +11,6 @@
 (defn boot-flow []
   {:first-dispatch [:request-db-release]
    :rules [{:when :seen?        :events :request-db-release-success  :dispatch-n (list [:request-labels] [:request-collections])}
-           {:when :seen?        :events :request-labels-success      :dispatch   [:set-labels]}
-           {:when :seen?        :events :request-collections-success :dispatch   [:set-collections]}
            {:when :seen-any-of? :events [:request-db-release-failure :request-labels-failure :request-collections-failure] :dispatch [:boot-failure] :halt? true}]})
 
 (defn- set-initial-loading
@@ -72,18 +70,14 @@
                    :on-success      [:request-collections-success]
                    :on-failure      [:request-collections-failure]}})))
 
-(re-frame/reg-event-fx
+(re-frame/reg-event-db
  :request-collections-success
- (fn []))
+ (fn [db [_ collections]]
+   (assoc db :collections collections)))
 
 (re-frame/reg-event-fx
  :request-collections-failure
  (fn []))
-
-(re-frame/reg-event-db
- :set-collections
- (fn [db [_ collections]]
-   (assoc db :collections collections)))
 
 ;; -- Filters ------------------------------------------------------------------
 
@@ -110,18 +104,14 @@
                    :on-success      [:request-labels-success]
                    :on-failure      [:request-labels-failure]}})))
 
-(re-frame/reg-event-fx
+(re-frame/reg-event-db
  :request-labels-success
- (fn []))
+ (fn [db [_ labels]]
+   (assoc db :labels labels)))
 
 (re-frame/reg-event-fx
  :request-labels-failure
  (fn []))
-
-(re-frame/reg-event-db
- :set-labels
- (fn [db [_ labels]]
-   (assoc db :labels labels)))
 
 ;; -- Print options ------------------------------------------------------------
 

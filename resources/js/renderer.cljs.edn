@@ -1,0 +1,2 @@
+{:require  [backstage-labels.renderer]
+ :init-fns [backstage-labels.renderer/init]}
