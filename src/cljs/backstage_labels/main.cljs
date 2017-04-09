@@ -1,6 +1,7 @@
-(ns backstage-labels.main)
+(ns backstage-labels.main
+  (:require [cljs.nodejs :as nodejs]))
 
-(def electron (js/require "electron"))
+(def electron (nodejs/require "electron"))
 (def app (.-app electron))
 (def browser-window (.-BrowserWindow electron))
 
@@ -34,7 +35,7 @@
 (defn init
   []
   (.on app "window-all-closed"
-       #(when-not (= js/process.platform "darwin")
+       #(when-not (= (.platform nodejs/process "darwin"))
           (.quit app)))
   (.on app "ready" init-browser)
   (set! *main-cli-fn* (fn [] nil)))
