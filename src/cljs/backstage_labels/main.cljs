@@ -17,16 +17,21 @@
 (defn- new-window
   [width height & opts]
   (->> (apply hash-map opts)
-       (merge {:width width :height height})
+       (merge {:width width
+               :height height
+               :min-width width
+               :min-height height})
        clj->js
        browser-window.))
 
 (defn- init-browser
   []
   (reset! main-window
-          (new-window 800 600
+          (new-window 600 750
+                      :frame false
                       :autoHideMenuBar true
-                      :webPreferences {:nodeIntegration false}))
+                      :webPreferences {:nodeIntegration false
+                                       :scrollBounce true}))
   (.loadURL @main-window index-url)
   (when dev?
     (.openDevTools @main-window #js {:mode "undocked"}))
