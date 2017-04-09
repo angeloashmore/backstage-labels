@@ -7,17 +7,20 @@
             [backstage-labels.views :as views]
             [backstage-labels.config :as config]))
 
-(defn dev-setup []
+(defn dev-setup
+  []
   (when config/debug?
     (enable-console-print!)
     (println "dev mode")))
 
-(defn mount-root []
+(defn mount-root
+  []
   (re-frame/clear-subscription-cache!)
   (reagent/render [views/main-panel]
                   (.getElementById js/document "app")))
 
-(defn init []
+(defn init
+  []
   (routes/app-routes)
   (re-frame/dispatch-sync [:boot])
   (dev-setup)

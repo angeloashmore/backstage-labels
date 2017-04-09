@@ -4,7 +4,10 @@
 
 (def default-db
   {:failed false
-   :db-release-tag nil
+
+   ;; DB releases
+   :db-release-tag 0
+   :db-release-tags []
 
    ;; Routing
    :active-panel :home-panel

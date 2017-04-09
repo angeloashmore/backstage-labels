@@ -6,14 +6,17 @@
 (def routes ["/" {""      :home
                   "about" :about}])
 
-(defn- parse-url [url]
+(defn- parse-url
+  [url]
   (bidi/match-route routes url))
 
-(defn- dispatch-route [matched-route]
+(defn- dispatch-route
+  [matched-route]
   (let [panel-name (keyword (str (name (:handler matched-route)) "-panel"))]
     (re-frame/dispatch [:set-active-panel panel-name])))
 
-(defn app-routes []
+(defn app-routes
+  []
   (pushy/start! (pushy/pushy dispatch-route parse-url)))
 
 (def url-for (partial bidi/path-for routes))

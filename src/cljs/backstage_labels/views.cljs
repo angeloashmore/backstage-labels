@@ -5,10 +5,14 @@
 ;; --------------------
 
 (defn home-panel []
-  (let [failed (re-frame/subscribe [:failed])
+  (let [initialized? (re-frame/subscribe [:initialized?])
+        failed (re-frame/subscribe [:failed])
+        db-release-tag (re-frame/subscribe [:db-release-tag])
         labels (re-frame/subscribe [:labels])]
     (fn []
       [:div (str "Did the app fail? " @failed)
+       [:div (str "Initialized? " @initialized?)]
+       [:div (str "DB release tag: " @db-release-tag)]
        [:div (str "How many labels? " (count @labels))]
        [:div [:a {:href (routes/url-for :about)} "go to About Page"]]])))
 

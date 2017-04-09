@@ -21,13 +21,31 @@
  (fn [db _]
    (:active-panel db)))
 
+;; -- DB Releases --------------------------------------------------------------
+
+(re-frame/reg-sub
+ :db-release-tag
+ (fn [db _]
+   (:db-release-tag db)))
+
+;; -- Collections --------------------------------------------------------------
+
+(re-frame/reg-sub
+ :collections
+ (fn [db _]
+   (:collections db)))
+
 ;; -- Filters ------------------------------------------------------------------
 
 (re-frame/reg-sub
- :filters
+ :filter-collection
  (fn [db _]
-   {:collection (:filter-collection db)
-    :query      (:filter-query db)}))
+   (:filter-collection db)))
+
+(re-frame/reg-sub
+ :filter-query
+ (fn [db _]
+   (:filter-query db)))
 
 ;; -- Labels -------------------------------------------------------------------
 
@@ -39,9 +57,9 @@
 ;; -- Print options ------------------------------------------------------------
 
 (re-frame/reg-sub
- :print-options
+ :print-option-template
  (fn [db _]
-   {:template (:print-option-template db)}))
+   (:print-option-template db)))
 
 ;; -- Queue --------------------------------------------------------------------
 
