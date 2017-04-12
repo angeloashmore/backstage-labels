@@ -5,17 +5,17 @@
 (def default-db
   {:failed false
 
-   ;; DB releases
-   :db-release-tag 0
-   :db-release-tags []
-
    ;; Routing
    :active-panel :home-panel
+
+   ;; DB releases
+   :db-release-tag nil
+   :db-release-tags ()
+   :db-release-tags-loading false
 
    ;; Collections
    :collections (sorted-map)
    :collections-loading false
-   :collections-error nil
 
    ;; Filters
    :filter-collection nil
@@ -24,7 +24,6 @@
    ;; Labels
    :labels (sorted-map)
    :labels-loading false
-   :labels-error nil
 
    ;; Print options
    :print-option-template config/default-print-option-template

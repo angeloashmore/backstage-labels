@@ -28,6 +28,11 @@
  (fn [db _]
    (:db-release-tag db)))
 
+(re-frame/reg-sub
+ :db-release-tags
+ (fn [db _]
+   (:db-release-tags db)))
+
 ;; -- Collections --------------------------------------------------------------
 
 (re-frame/reg-sub

@@ -8,11 +8,15 @@
   (let [initialized? (re-frame/subscribe [:initialized?])
         failed (re-frame/subscribe [:failed])
         db-release-tag (re-frame/subscribe [:db-release-tag])
+        db-release-tags (re-frame/subscribe [:db-release-tags])
+        collections (re-frame/subscribe [:collections])
         labels (re-frame/subscribe [:labels])]
     (fn []
       [:div (str "Did the app fail? " @failed)
        [:div (str "Initialized? " @initialized?)]
        [:div (str "DB release tag: " @db-release-tag)]
+       [:div (str "DB release tags: " @db-release-tags)]
+       [:div (str "How many collections? " (count @collections))]
        [:div (str "How many labels? " (count @labels))]
        [:div [:a {:href (routes/url-for :about)} "go to About Page"]]])))
 

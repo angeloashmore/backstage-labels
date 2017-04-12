@@ -1,24 +1,33 @@
 (ns backstage-labels.events
   (:require [re-frame.core :as re-frame :refer [reg-event-db reg-event-fx]]
+            [day8.re-frame.async-flow-fx]
             [day8.re-frame.http-fx]
             [ajax.core :as ajax]
             [backstage-labels.config :as config]
             [backstage-labels.db :as db]))
 
-;; -- Boot ---------------------------------------------------------------------
-
-(re-frame/reg-event-fx
- :boot
- (fn [_ _]
-   {:db       (-> db/default-db
-                  (assoc :collections-loading true)
-                  (assoc :labels-loading true))
-    :dispatch [:request-db-release-tags]}))
-
 (re-frame/reg-event-db
  :app-failure
  (fn [db _]
    (assoc db :failed true)))
+
+;; -- Boot ---------------------------------------------------------------------
+
+;; Async flow for boot process. Requests DB release tags, then sets selected tag
+;; to latest (resolved in :set-db-release-tag event handler to latest tag name).
+(defn boot-flow
+  []
+  {:first-dispatch [:request-db-release-tags]
+   :rules [{:when     :seen?
+            :events   :set-db-release-tags
+            :dispatch [:set-db-release-tag :latest]}]})
+
+;; Sets the default app-db and fires off the boot flow.
+(re-frame/reg-event-fx
+ :boot
+ (fn [_ _]
+   {:db         db/default-db
+    :async-flow (boot-flow)}))
 
 ;; -- Routing ------------------------------------------------------------------
 
@@ -52,45 +61,54 @@
  (fn [db [_ tags]]
    (assoc db :db-release-tags tags)))
 
-;; Sets the current label DB release tag using the desired index of
-;; :db-release-tags and dispatches :request-collections and :request-labels.
+;; Sets the current label DB release tag, empties the label queue, and
+;; dispatches :request-collections and :request-labels.
 (re-frame/reg-event-fx
  :set-db-release-tag
- (fn [{:keys [db]} [_ index]]
-   {:db         (assoc db :db-release-tag index)
-    :dispatch-n (list [:request-collections]
-                      [:request-labels])}))
+ (fn [{db :db} [_ provided-tag]]
+   (let [latest-tag (first (:db-release-tags db))
+         tag        (if (= provided-tag :latest)
+                      latest-tag
+                      provided-tag)]
+     {:db         (assoc db :db-release-tag tag)
+      :dispatch-n (list [:empty-queue]
+                        [:request-collections]
+                        [:request-labels])})))
 
 ;; Requests all available label DB releases. Dispatches
 ;; :request-db-release-tags-success on success, or
 ;; :request-db-release-tags-failure on failure.
 (re-frame/reg-event-fx
  :request-db-release-tags
- (fn [_ _]
-   {:http-xhrio {:method          :get
+ (fn [{db :db} _]
+   {:db         (assoc db :db-release-tags-loading true)
+    :http-xhrio {:method          :get
                  :uri             config/db-releases-uri
                  :format          (ajax/json-request-format)
                  :response-format (ajax/json-response-format {:keywords? true})
                  :on-success      [:request-db-release-tags-success]
                  :on-failure      [:request-db-release-tags-failure]}}))
 
-;; Sets label DB releases list and sets the current tag to the latest.
+;; Sets label DB releases list with :latest injected as the first element.
 ;;
 ;; Dispatched on successful network request of label DB releases.
 (re-frame/reg-event-fx
  :request-db-release-tags-success
- (fn [_ [_ releases]]
-   (let [tags   (map :tag_name releases)]
-     {:dispatch-n (list [:set-db-release-tags tags]
-                        [:set-db-release-tag 0])})))
+ (fn [{db :db} [_ releases]]
+   (let [tags (->> releases
+                   (map :tag_name)
+                   (map keyword))]
+     {:db       (assoc db :db-release-tags-loading false)
+      :dispatch [:set-db-release-tags tags]})))
 
 ;; Sets the whole app as failed.
 ;;
 ;; Dispatched on unsuccessful network request of label DB releases.
 (re-frame/reg-event-fx
  :request-db-release-tags-failure
- (fn [_ _]
-   {:dispatch [:app-failure]}))
+ (fn [{db :db} _]
+   {:db       (assoc db :db-release-tags-loading false)
+    :dispatch [:app-failure]}))
 
 ;; -- Collections --------------------------------------------------------------
 
@@ -100,11 +118,10 @@
 (re-frame/reg-event-fx
  :request-collections
  (fn [{db :db} _]
-   (let [index (:db-release-tag db)
-         tags  (:db-release-tags db)
-         tag   (nth tags index)
-         uri   (str config/db-downloads-uri tag "/collections.json")]
-     {:http-xhrio {:method          :get
+   (let [tag   (:db-release-tag db)
+         uri   (str config/db-downloads-uri (name tag) "/collections.json")]
+     {:db         (assoc db :collections-loading true)
+      :http-xhrio {:method          :get
                    :uri             uri
                    :format          (ajax/json-request-format)
                    :response-format (ajax/json-response-format {:keywords? true})
@@ -117,15 +134,18 @@
 (re-frame/reg-event-db
  :request-collections-success
  (fn [db [_ collections]]
-   (assoc db :collections collections)))
+   (-> db
+       (assoc :collections collections)
+       (assoc :collections-loading false))))
 
 ;; Sets the whole app as failed.
 ;;
 ;; Dispatched on unsuccessful network request of collections.
 (re-frame/reg-event-fx
  :request-collections-failure
- (fn [_ _]
-   {:dispatch [:app-failure]}))
+ (fn [{db :db} _]
+   {:db       (assoc db :collections-loading false)
+    :dispatch [:app-failure]}))
 
 ;; -- Filters ------------------------------------------------------------------
 
@@ -146,11 +166,10 @@
 (re-frame/reg-event-fx
  :request-labels
  (fn [{db :db} _]
-   (let [index (:db-release-tag db)
-         tags  (:db-release-tags db)
-         tag   (nth tags index)
-         uri   (str config/db-downloads-uri tag "/labels.json")]
-     {:http-xhrio {:method          :get
+   (let [tag   (:db-release-tag db)
+         uri   (str config/db-downloads-uri (name tag) "/labels.json")]
+     {:db         (assoc db :labels-loading true)
+      :http-xhrio {:method          :get
                    :uri             uri
                    :format          (ajax/json-request-format)
                    :response-format (ajax/json-response-format {:keywords? true})
@@ -163,15 +182,18 @@
 (re-frame/reg-event-db
  :request-labels-success
  (fn [db [_ labels]]
-   (assoc db :labels labels)))
+   (-> db
+       (assoc :labels labels)
+       (assoc :labels-loading false))))
 
 ;; Sets the whole app as failed.
 ;;
 ;; Dispatched on unsuccessful network request of labels.
 (re-frame/reg-event-fx
  :request-labels-failure
- (fn [_ _]
-   {:dispatch [:app-failure]}))
+ (fn [{db :db} _]
+   {:db       (assoc db :labels-loading false)
+    :dispatch [:app-failure]}))
 
 ;; -- Print options ------------------------------------------------------------
 
