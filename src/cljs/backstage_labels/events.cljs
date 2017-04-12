@@ -89,7 +89,7 @@
                  :on-success      [:request-db-release-tags-success]
                  :on-failure      [:request-db-release-tags-failure]}}))
 
-;; Sets label DB releases list with :latest injected as the first element.
+;; Sets label DB releases list.
 ;;
 ;; Dispatched on successful network request of label DB releases.
 (re-frame/reg-event-fx
