@@ -9,6 +9,7 @@
                  [adzerk/boot-cljs            "2.0.0"  :scope "test"]
                  [adzerk/boot-cljs-repl       "0.3.3"  :scope "test"]
                  [adzerk/boot-reload          "0.5.1"  :scope "test"]
+                 [binaryage/devtools          "0.9.2"  :scope "test"]
                  [reagent                     "0.6.1"]
                  [re-frame                    "0.9.2"]
                  [day8.re-frame/async-flow-fx "0.0.6"]
@@ -26,13 +27,16 @@
   []
   (comp (cljs :ids #{"js/main"}
               :compiler-options {:closure-defines {'backstage-labels.main/dev? true}
-                                 :asset-path "target/js/main.out"})))
+                                 :asset-path      "target/js/main.out"
+                                 :optimizations   :none})))
 
 (deftask build-renderer
   "Build renderer entry point for debug."
   []
   (comp (cljs :ids #{"js/renderer"}
-              :compiler-options {:asset-path "js/renderer.out"})))
+              :compiler-options {:preloads      '[devtools.preload]
+                                 :asset-path    "js/renderer.out"
+                                 :optimizations :none})))
 
 (deftask debug
   "Debug build."

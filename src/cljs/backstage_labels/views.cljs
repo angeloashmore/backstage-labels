@@ -3,8 +3,8 @@
             [backstage-labels.routes :as routes]))
 
 (defn query-bar
-  [{:keys [query on-change]}]
-  (let [save #(on-change (-> % str clojure.string/trim))]
+  [{:keys [query on-save]}]
+  (let [save #(on-save (-> % str clojure.string/trim))]
     [:input {:type "text"
              :value query
              :auto-focus true
@@ -16,7 +16,7 @@
   []
   (let [filter-query (re-frame/subscribe [:filter-query])]
     [query-bar {:query @filter-query
-                :on-change #(re-frame/dispatch [:set-filter-query %])}]))
+                :on-save #(re-frame/dispatch [:set-filter-query %])}]))
 
 (defn about-panel
   []
