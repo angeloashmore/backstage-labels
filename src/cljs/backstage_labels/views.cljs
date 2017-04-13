@@ -1,26 +1,25 @@
 (ns backstage-labels.views
-  (:require [re-frame.core :as re-frame]
+  (:require [re-frame.core :as re-frame :refer [subscribe dispatch]]
             [backstage-labels.routes :as routes]))
+
+(defn query-bar
+  [{:keys [query on-change]}]
+  (let [save #(on-change (-> % str clojure.string/trim))]
+    [:input {:type "text"
+             :value query
+             :auto-focus true
+             :on-change #(save (-> % .-target .-value))}]))
 
 ;; --------------------
 
-(defn home-panel []
-  (let [initialized? (re-frame/subscribe [:initialized?])
-        failed (re-frame/subscribe [:failed])
-        db-release-tag (re-frame/subscribe [:db-release-tag])
-        db-release-tags (re-frame/subscribe [:db-release-tags])
-        collections (re-frame/subscribe [:collections])
-        labels (re-frame/subscribe [:labels])]
-    (fn []
-      [:div (str "Did the app fail? " @failed)
-       [:div (str "Initialized? " @initialized?)]
-       [:div (str "DB release tag: " @db-release-tag)]
-       [:div (str "DB release tags: " @db-release-tags)]
-       [:div (str "How many collections? " (count @collections))]
-       [:div (str "How many labels? " (count @labels))]
-       [:div [:a {:href (routes/url-for :about)} "go to About Page"]]])))
+(defn home-panel
+  []
+  (let [filter-query (re-frame/subscribe [:filter-query])]
+    [query-bar {:query @filter-query
+                :on-change #(re-frame/dispatch [:set-filter-query %])}]))
 
-(defn about-panel []
+(defn about-panel
+  []
   (fn []
     [:div "This is the About Page"
      [:div [:a {:href (routes/url-for :home)} "go to Home Page"]]]))

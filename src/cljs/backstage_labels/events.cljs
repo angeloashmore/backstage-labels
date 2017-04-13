@@ -156,6 +156,7 @@
 
 (re-frame/reg-event-db
  :set-filter-query
+ [re-frame/debug]
  (fn [db [_ query]]
    (assoc db :filter-query query)))
 
