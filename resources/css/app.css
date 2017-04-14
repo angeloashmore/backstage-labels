@@ -1,0 +1,31 @@
+html,
+body {
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+}
+
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+input,
+button,
+textarea,
+:focus {
+  -webkit-app-region: no-drag;
+  outline: none;
+}
+
+:global(#react-root) {
+  height: 100%;
+}
+
+@media print {
+  html {
+    height: auto;
+  }
+}
