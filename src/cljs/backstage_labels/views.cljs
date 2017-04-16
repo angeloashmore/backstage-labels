@@ -12,5 +12,5 @@
   []
   (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
-      [:div {:class-name "flex h-100 sans-serif us--none"}
+      [:div {:class-name "flex flex-auto sans-serif us--none fsa"}
        (panels @active-panel)])))

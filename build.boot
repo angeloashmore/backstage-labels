@@ -11,6 +11,7 @@
                  [adzerk/boot-reload          "0.5.1"  :scope "test"]
                  [binaryage/devtools          "0.9.2"  :scope "test"]
                  [reagent                     "0.6.1"]
+                 [reagent-utils               "0.2.1"]
                  [re-frame                    "0.9.2"]
                  [day8.re-frame/async-flow-fx "0.0.6"]
                  [day8.re-frame/http-fx       "0.1.3"]

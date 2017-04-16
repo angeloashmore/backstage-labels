@@ -1,3 +1,7 @@
 .us--none {
   user-select: none;
 }
+
+.fsa {
+  -webkit-font-smoothing: antialiased;
+}
