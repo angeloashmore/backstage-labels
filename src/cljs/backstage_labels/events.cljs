@@ -66,7 +66,7 @@
 (re-frame/reg-event-fx
  :set-release-tag
  (fn [{db :db} [_ provided-tag]]
-   (let [latest-tag (first (:release-tags db))
+   (let [latest-tag (nth (:release-tags db) 0)
          tag        (if (= provided-tag :latest)
                       latest-tag
                       provided-tag)]
@@ -97,7 +97,7 @@
  (fn [{db :db} [_ releases]]
    (let [tags (->> releases
                    (map :tag_name)
-                   (map keyword))]
+                   (mapv keyword))]
      {:db       (assoc db :release-tags-loading false)
       :dispatch [:set-release-tags tags]})))
 
@@ -133,9 +133,11 @@
 (re-frame/reg-event-db
  :request-collections-success
  (fn [db [_ collections]]
-   (-> db
-       (assoc :collections collections)
-       (assoc :collections-loading false))))
+   (let [zipped (zipmap (map :id collections)
+                        (map #(dissoc % :id) collections))]
+    (-> db
+        (assoc :collections zipped)
+        (assoc :collections-loading false)))))
 
 ;; Sets the whole app as failed.
 ;;
@@ -168,9 +170,11 @@
 (re-frame/reg-event-db
  :request-labels-success
  (fn [db [_ labels]]
-   (-> db
-       (assoc :labels labels)
-       (assoc :labels-loading false))))
+   (let [zipped (zipmap (map :id labels)
+                        (map #(dissoc % :id) labels))]
+    (-> db
+        (assoc :labels zipped)
+        (assoc :labels-loading false)))))
 
 ;; Sets the whole app as failed.
 ;;

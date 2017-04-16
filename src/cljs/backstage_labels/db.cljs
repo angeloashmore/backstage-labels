@@ -10,11 +10,11 @@
 
    ;; DB releases
    :release-tag nil
-   :release-tags ()
+   :release-tags []
    :release-tags-loading false
 
    ;; Collections
-   :collections (sorted-map)
+   :collections {}
    :collections-loading false
 
    ;; Filters
@@ -22,7 +22,7 @@
    :filter-query nil
 
    ;; Labels
-   :labels (sorted-map)
+   :labels {}
    :labels-loading false
 
    ;; Print options
