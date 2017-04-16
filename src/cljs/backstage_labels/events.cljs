@@ -33,6 +33,7 @@
 
 (re-frame/reg-event-db
  :set-active-panel
+ [re-frame/debug]
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
 
@@ -202,25 +203,40 @@
 
 ;; -- Queue --------------------------------------------------------------------
 
+;; Queues label at end of vector. If the most recently queued label is the same
+;; ID, this adds the quantity to the existing quantity. Doing so ensures labels
+;; are queued in the same order as entered.
+;;
+;; Queue items are stored in a two element vector:
+;;
+;;   [label-id qty]
 (re-frame/reg-event-db
  :queue-label
  (fn [db [_ id qty]]
-   (let [existing-qty (get-in db [:queue id] 0)
-         new-qty      (+ existing-qty qty)]
-     (assoc-in db [:queue id] new-qty))))
+   (let [latest     (-> db :queue peek)
+         latest-id  (first latest)
+         latest-qty (last latest)
+         last-index (-> db :queue count)]
+     (if (= id latest-id)
+       (update-in db [:queue] assoc last-index [id (+ qty latest-qty)])
+       (update-in db [:queue] conj [id qty])))))
 
+;; Dequeues label at the specific index.
 (re-frame/reg-event-db
  :dequeue-label
- (fn [db [_ id]]
-   (update-in db [:queue] dissoc id)))
+ (fn [db [_ index]]
+   (update-in db [:queue] #(vec (concat (subvec % 0 (- index 1))
+                                        (subvec % (+ index 1)))))))
 
+;; Removes all queued labels.
 (re-frame/reg-event-db
  :empty-queue
  (fn [db _]
-   (let [queue (:queue db)]
-     (assoc db :queue (empty queue)))))
+   (assoc db :queue (-> db :queue empty))))
 
+;; Sets the quantity of a queued label at the specified index.
 (re-frame/reg-event-db
  :set-queue-qty
- (fn [db [_ id qty]]
-   (assoc-in db [:queue id] qty)))
+ (fn [db [_ index qty]]
+   (let [[id _] (nth (:queue db) index)]
+     (update-in db [:queue] assoc index [id qty]))))

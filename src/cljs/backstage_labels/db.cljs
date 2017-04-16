@@ -29,4 +29,4 @@
    :print-option-template config/default-print-option-template
 
    ;; Queue
-   :queue (sorted-map)})
+   :queue []})
