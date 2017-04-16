@@ -1,10 +1,10 @@
-(ns backstage-labels.filters.views
+(ns backstage-labels.components.query-bar
   (:require [cljs-css-modules.macro :refer-macros [defstyle]]))
 
 (defstyle style
   [".query-bar" {:font-size "32px"}])
 
-(defn query-bar
+(defn main
   [{:keys [query on-save]}]
   (let [save #(on-save (-> % str clojure.string/trim))]
     [:input {:auto-focus true
