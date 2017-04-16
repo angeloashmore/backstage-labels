@@ -212,10 +212,9 @@
 (re-frame/reg-event-db
  :queue-label
  (fn [db [_ id qty]]
-   (let [latest     (-> db :queue peek)
-         latest-id  (first latest)
-         latest-qty (last latest)
-         last-index (-> db :queue count)]
+   (let [queue                  (:queue db)
+         [latest-id latest-qty] (peek queue)
+         last-index             (-> queue count dec)]
      (if (= id latest-id)
        (update-in db [:queue] assoc last-index [id (+ qty latest-qty)])
        (update-in db [:queue] conj [id qty])))))
@@ -224,8 +223,8 @@
 (re-frame/reg-event-db
  :dequeue-label
  (fn [db [_ index]]
-   (update-in db [:queue] #(vec (concat (subvec % 0 (- index 1))
-                                        (subvec % (+ index 1)))))))
+   (update-in db [:queue] #(vec (concat (subvec % 0 (dec index))
+                                        (subvec % (inc index)))))))
 
 ;; Removes all queued labels.
 (re-frame/reg-event-db
