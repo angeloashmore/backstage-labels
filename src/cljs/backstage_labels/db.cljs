@@ -9,9 +9,9 @@
    :active-panel :home-panel
 
    ;; DB releases
-   :db-release-tag nil
-   :db-release-tags ()
-   :db-release-tags-loading false
+   :release-tag nil
+   :release-tags ()
+   :release-tags-loading false
 
    ;; Collections
    :collections (sorted-map)

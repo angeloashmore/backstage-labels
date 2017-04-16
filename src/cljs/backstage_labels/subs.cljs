@@ -13,6 +13,7 @@
  :initialized?
  (fn [db _]
    (and (not (empty? db))
+        (not (empty? (:release-tags db)))
         (not (empty? (:collections db)))
         (not (empty? (:labels db))))))
 
@@ -26,14 +27,19 @@
 ;; -- Releases -----------------------------------------------------------------
 
 (re-frame/reg-sub
- :db-release-tag
+ :release-tag
  (fn [db _]
-   (:db-release-tag db)))
+   (:release-tag db)))
 
 (re-frame/reg-sub
- :db-release-tags
+ :release-tags
  (fn [db _]
-   (:db-release-tags db)))
+   (:release-tags db)))
+
+(re-frame/reg-sub
+ :release-tags-loading
+ (fn [db _]
+   (:release-tags-loading db)))
 
 ;; -- Collections --------------------------------------------------------------
 
@@ -42,12 +48,22 @@
  (fn [db _]
    (:collections db)))
 
+(re-frame/reg-sub
+ :collections-loading
+ (fn [db _]
+   (:collections-loading db)))
+
 ;; -- Labels -------------------------------------------------------------------
 
 (re-frame/reg-sub
  :labels
  (fn [db _]
    (:labels db)))
+
+(re-frame/reg-sub
+ :labels-loading
+ (fn [db _]
+   (:labels-loading db)))
 
 ;; -- Filters ------------------------------------------------------------------
 

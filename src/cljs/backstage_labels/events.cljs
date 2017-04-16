@@ -33,7 +33,6 @@
 
 (re-frame/reg-event-db
  :set-active-panel
- [re-frame/debug]
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
 
