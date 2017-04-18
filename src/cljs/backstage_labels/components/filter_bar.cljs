@@ -29,10 +29,10 @@
         [:option {:key k :value k} (:key v)])]]))
 
 (defn main
-  [{:keys [query set-query collections collection set-collection]}]
+  [{:keys [query set-filter-query collections collection set-filter-collection]}]
   [:div {:class-name "flex flex-column flex-none"}
    [query-bar {:query query
-               :set-query set-query}]
+               :set-query set-filter-query}]
    [collection-bar {:collections    collections
                     :collection     collection
-                    :set-collection set-collection}]])
+                    :set-collection set-filter-collection}]])
