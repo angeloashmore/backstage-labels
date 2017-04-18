@@ -60,6 +60,15 @@
    (:labels db)))
 
 (re-frame/reg-sub
+ :labels-filtered
+ (fn [db _]
+   (let [{:keys [labels filter-collection]} db
+         allowed (get-in db [:collections filter-collection :label_ids] [])]
+     (if (nil? filter-collection)
+       labels
+       (select-keys labels (map keyword allowed))))))
+
+(re-frame/reg-sub
  :labels-loading
  (fn [db _]
    (:labels-loading db)))
@@ -89,3 +98,8 @@
  :queue
  (fn [db _]
    (:queue db)))
+
+(re-frame/reg-sub
+ :queue-count
+ (fn [db _]
+   (reduce #(+ %1 (peek %2)) 0 (:queue db))))

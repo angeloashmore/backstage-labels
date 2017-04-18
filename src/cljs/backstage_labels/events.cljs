@@ -133,11 +133,10 @@
 (re-frame/reg-event-db
  :request-collections-success
  (fn [db [_ collections]]
-   (let [zipped (zipmap (map :id collections)
-                        (map #(dissoc % :id) collections))]
-    (-> db
-        (assoc :collections zipped)
-        (assoc :collections-loading false)))))
+   (let [zipped (zipmap (map #(-> % :id keyword) collections) collections)]
+     (-> db
+         (assoc :collections zipped)
+         (assoc :collections-loading false)))))
 
 ;; Sets the whole app as failed.
 ;;
@@ -170,8 +169,7 @@
 (re-frame/reg-event-db
  :request-labels-success
  (fn [db [_ labels]]
-   (let [zipped (zipmap (map :id labels)
-                        (map #(dissoc % :id) labels))]
+   (let [zipped (zipmap (map #(-> % :id keyword) labels) labels)]
     (-> db
         (assoc :labels zipped)
         (assoc :labels-loading false)))))
@@ -216,7 +214,8 @@
 (re-frame/reg-event-db
  :queue-label
  (fn [db [_ id qty]]
-   (let [queue                  (:queue db)
+   (let [qty                    (or qty 1)
+         queue                  (:queue db)
          [latest-id latest-qty] (peek queue)
          last-index             (-> queue count dec)]
      (if (= id latest-id)

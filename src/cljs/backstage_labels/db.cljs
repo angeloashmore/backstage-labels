@@ -14,7 +14,7 @@
    :release-tags-loading false
 
    ;; Collections
-   :collections {}
+   :collections []
    :collections-loading false
 
    ;; Filters

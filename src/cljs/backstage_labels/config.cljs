@@ -3,6 +3,12 @@
 (def debug?
   ^boolean js/goog.DEBUG)
 
+(def templates {:master-pack "Master Pack"
+                :master-pack-thin "Master Pack Thin"
+                :overstock "Overstock"
+                :physical-inventory "Physical Inventory"
+                :shelf "Shelf"})
+
 (def default-print-option-template
   :master-pack)
 
