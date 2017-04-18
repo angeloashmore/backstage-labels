@@ -26,7 +26,7 @@
      [label/main {:key id
                   :label l
                   :accessory-right (label-accessory-right #(queue-label id))
-                  :on-double-click #(dispatch [:queue-label id])}])])
+                  :on-double-click #(queue-label id)}])])
 
 (defn queue-list
   [{:keys [queue]}]
