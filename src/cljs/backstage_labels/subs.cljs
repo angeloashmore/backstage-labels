@@ -10,11 +10,13 @@
 
 (reg-sub
  :initialized?
- (fn [db _]
-   (and (not (empty? db))
-        (not (empty? (:release-tags db)))
-        (not (empty? (:collections db)))
-        (not (empty? (:labels db))))))
+ :<- [:release-tags]
+ :<- [:collections]
+ :<- [:labels]
+ (fn [[release-tags collections labels] _]
+   (and (not (empty? release-tags))
+        (not (empty? collections))
+        (not (empty? labels)))))
 
 ;; -- Routing ------------------------------------------------------------------
 
@@ -61,9 +63,12 @@
 
 (reg-sub
  :labels-filtered
- (fn [db _]
-   (let [{:keys [labels filter-collection]} db
-         allowed (get-in db [:collections filter-collection :label_ids] [])]
+ :<- [:labels]
+ :<- [:collections]
+ :<- [:filter-collection]
+ :<- [:filter-query]
+ (fn [[labels collections filter-collection filter-query] _]
+   (let [allowed (get-in collections [filter-collection :label_ids] [])]
      (if (nil? filter-collection)
        labels
        (select-keys labels (map keyword allowed))))))
@@ -71,9 +76,8 @@
 (reg-sub
  :label
  :<- [:labels]
- (fn [labels query-v]
-   (let [[_ id] query-v]
-     (get labels id))))
+ (fn [labels [_ id]]
+   (get labels id)))
 
 (reg-sub
  :labels-loading
@@ -108,5 +112,6 @@
 
 (reg-sub
  :queue-count
- (fn [db _]
-   (reduce #(+ %1 (peek %2)) 0 (:queue db))))
+ :<- [:queue]
+ (fn [queue _]
+   (reduce #(+ %1 (peek %2)) 0 queue)))
