@@ -226,7 +226,7 @@
 (re-frame/reg-event-db
  :dequeue-label
  (fn [db [_ index]]
-   (update-in db [:queue] #(vec (concat (subvec % 0 (dec index))
+   (update-in db [:queue] #(vec (concat (subvec % 0 index)
                                         (subvec % (inc index)))))))
 
 ;; Removes all queued labels.
