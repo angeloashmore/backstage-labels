@@ -6,7 +6,7 @@
             [backstage-labels.config :as config]
             [backstage-labels.db :as db]))
 
-(re-frame/reg-event-db
+(reg-event-db
  :app-failure
  (fn [db _]
    (assoc db :failed true)))
@@ -23,7 +23,7 @@
             :dispatch [:set-release-tag :latest]}]})
 
 ;; Sets the default app-db and fires off the boot flow.
-(re-frame/reg-event-fx
+(reg-event-fx
  :boot
  (fn [_ _]
    {:db         db/default-db
@@ -31,7 +31,7 @@
 
 ;; -- Routing ------------------------------------------------------------------
 
-(re-frame/reg-event-db
+(reg-event-db
  :set-active-panel
  (fn [db [_ active-panel]]
    (assoc db :active-panel active-panel)))
@@ -56,14 +56,14 @@
 ;; before loading another database release (label UUID reuse/unavailability).
 
 ;; Sets the list of available label DB release tags.
-(re-frame/reg-event-db
+(reg-event-db
  :set-release-tags
  (fn [db [_ tags]]
    (assoc db :release-tags tags)))
 
 ;; Sets the current label DB release tag, empties the label queue, and
 ;; dispatches :request-collections and :request-labels.
-(re-frame/reg-event-fx
+(reg-event-fx
  :set-release-tag
  (fn [{db :db} [_ provided-tag]]
    (let [latest-tag (nth (:release-tags db) 0)
@@ -78,7 +78,7 @@
 ;; Requests all available label DB releases. Dispatches
 ;; :request-release-tags-success on success, or :request-release-tags-failure on
 ;; failure.
-(re-frame/reg-event-fx
+(reg-event-fx
  :request-release-tags
  (fn [{db :db} _]
    {:db         (assoc db :release-tags-loading true)
@@ -92,7 +92,7 @@
 ;; Sets label DB releases list.
 ;;
 ;; Dispatched on successful network request of label DB releases.
-(re-frame/reg-event-fx
+(reg-event-fx
  :request-release-tags-success
  (fn [{db :db} [_ releases]]
    (let [tags (->> releases
@@ -104,7 +104,7 @@
 ;; Sets the whole app as failed.
 ;;
 ;; Dispatched on unsuccessful network request of label DB releases.
-(re-frame/reg-event-fx
+(reg-event-fx
  :request-release-tags-failure
  (fn [{db :db} _]
    {:db       (assoc db :release-tags-loading false)
@@ -115,7 +115,7 @@
 ;; Requests collections for provided tag. Dispatches
 ;; :request-collections-success on success, or :request-collections-failure on
 ;; failure.
-(re-frame/reg-event-fx
+(reg-event-fx
  :request-collections
  (fn [{db :db} [_ tag]]
    (let [uri (str config/downloads-uri (name tag) "/collections.json")]
@@ -130,7 +130,7 @@
 ;; Sets collections list.
 ;;
 ;; Dispatched on successful network request of collections.
-(re-frame/reg-event-db
+(reg-event-db
  :request-collections-success
  (fn [db [_ collections]]
    (let [zipped (zipmap (map #(-> % :id keyword) collections) collections)]
@@ -141,7 +141,7 @@
 ;; Sets the whole app as failed.
 ;;
 ;; Dispatched on unsuccessful network request of collections.
-(re-frame/reg-event-fx
+(reg-event-fx
  :request-collections-failure
  (fn [{db :db} _]
    {:db       (assoc db :collections-loading false)
@@ -151,7 +151,7 @@
 
 ;; Requests labels for provided tag. Dispatches :request-labels-success on
 ;; success, or :request-labels-failure on failure.
-(re-frame/reg-event-fx
+(reg-event-fx
  :request-labels
  (fn [{db :db} [_ tag]]
    (let [uri (str config/downloads-uri (name tag) "/labels.json")]
@@ -166,7 +166,7 @@
 ;; Sets labels list.
 ;;
 ;; Dispatched on successful network request of labels.
-(re-frame/reg-event-db
+(reg-event-db
  :request-labels-success
  (fn [db [_ labels]]
    (let [zipped (zipmap (map #(-> % :id keyword) labels) labels)]
@@ -177,7 +177,7 @@
 ;; Sets the whole app as failed.
 ;;
 ;; Dispatched on unsuccessful network request of labels.
-(re-frame/reg-event-fx
+(reg-event-fx
  :request-labels-failure
  (fn [{db :db} _]
    {:db       (assoc db :labels-loading false)
@@ -185,19 +185,19 @@
 
 ;; -- Filters ------------------------------------------------------------------
 
-(re-frame/reg-event-db
+(reg-event-db
  :set-filter-collection
  (fn [db [_ id]]
    (assoc db :filter-collection id)))
 
-(re-frame/reg-event-db
+(reg-event-db
  :set-filter-query
  (fn [db [_ query]]
    (assoc db :filter-query query)))
 
 ;; -- Print options ------------------------------------------------------------
 
-(re-frame/reg-event-db
+(reg-event-db
  :set-print-option-template
  (fn [db [_ template]]
    (assoc db :print-option-template template)))
@@ -211,7 +211,7 @@
 ;; Queue items are stored in a two element vector:
 ;;
 ;;   [label-id qty]
-(re-frame/reg-event-db
+(reg-event-db
  :queue-label
  (fn [db [_ id qty]]
    (let [qty                    (or qty 1)
@@ -223,20 +223,20 @@
        (update-in db [:queue] conj [id qty])))))
 
 ;; Dequeues label at the specific index.
-(re-frame/reg-event-db
+(reg-event-db
  :dequeue-label
  (fn [db [_ index]]
    (update-in db [:queue] #(vec (concat (subvec % 0 index)
                                         (subvec % (inc index)))))))
 
 ;; Removes all queued labels.
-(re-frame/reg-event-db
+(reg-event-db
  :empty-queue
  (fn [db _]
    (assoc db :queue (-> db :queue empty))))
 
 ;; Sets the quantity of a queued label at the specified index.
-(re-frame/reg-event-db
+(reg-event-db
  :set-queue-qty
  (fn [db [_ index qty]]
    (let [[id _] (nth (:queue db) index)]
