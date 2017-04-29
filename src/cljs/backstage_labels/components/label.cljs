@@ -5,7 +5,7 @@
   (let [info (cons category (vals metadata))
         i    (atom -1)]
     [:div {:class "flex-auto pv2"}
-     [:span {:class "block pb1 f4 tracked"} key]
+     [:span {:class "block pb2 f4 tracked"} key]
      [:ul {:class "overflow-hidden nowrap pa0 f7 silver"}
       (for [item info]
         (do
