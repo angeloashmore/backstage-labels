@@ -12,5 +12,7 @@
   []
   (let [active-panel (subscribe [:active-panel])]
     (fn []
-      [:div {:class-name "flex flex-auto sans-serif us--none fsa"}
+      ;; Set cursor to pointer to simulate a native app.
+      [:div {:class "flex flex-auto sans-serif us--none fsa"
+             :style {:cursor "default"}}
        (panels @active-panel)])))
