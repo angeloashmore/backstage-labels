@@ -66,24 +66,36 @@
   []
   (let [filtered-labels (subscribe [:labels-filtered])]
     [:ul {:class "flex-auto overflow-scroll list ma0 pa0"
-          :style {:box-shadow "inset -0.5px 0 0 rgba(0, 0, 0, 0.15)"}}
+          :style {:box-shadow "inset -0.5px 0 0 rgba(0, 0, 0, 0.15), inset 0 -0.5px 0 rgba(0, 0, 0, 0.15)"}}
      (map labels-list-item @filtered-labels)]))
+
+(defn queue-all-filtered-bar
+  "Displays queue all filtered labels button."
+  []
+  (let [labels    (subscribe [:labels-filtered])
+        ids       (keys @labels)
+        queue-all #(dispatch [:queue-labels ids])]
+    [:div {:class "flex flex-none items-center justify-end pa2 ph3 bg-light-gray"
+           :style {:box-shadow "inset -0.5px 0 0 rgba(0, 0, 0, 0.15)"}}
+     [:a {:class  "db pv1 pl2 f7 blue"
+          :on-click queue-all}
+      "Add All Visible"]]))
 
 ;; -- Right Column -------------------------------------------------------------
 
-(defn queue-actions-bar
+(defn queue-actions-header-bar
   "Displays queue count and print button."
   []
   (let [queue-count (subscribe [:queue-count])]
-    [:div {:class-name "flex flex-none items-center justify-between h3 pa3 bg-light-gray"
+    [:div {:class "flex flex-none items-center justify-between h3 pa3 bg-light-gray"
            :style      {:box-shadow "inset 0 -0.5px 0 rgba(0, 0, 0, 0.15)"
                         :-webkit-app-region "drag"}}
      ;; Count
-     [:div {:class-name "f6 fw2 gray"}
+     [:div {:class "f6 fw2 gray"}
       (str @queue-count " label" (when (not= @queue-count 1) "s"))]
 
      ;; Print button
-     [:button {:class-name "outline-0 bn pa2 ph3 f6 fw5 blue bg-white br-pill shadow-1"
+     [:button {:class "outline-0 bn pa2 ph3 f6 fw5 blue bg-white br-pill shadow-1"
                :style {:box-shadow "0 0 0 0.5px rgba(0, 0, 0, 0.07), 0 0.5px 0.5px rgba(0, 0, 0, 0.2)"}}
       "Print"]]))
 
@@ -95,14 +107,14 @@
         set-print-option-template #(dispatch [:set-print-option-template %])
         option                    (fn [[key name]]
                                     [:option {:key key} name])]
-    [:div {:class-name "flex flex-none items-center pa2 ph3 bg-light-gray"
+    [:div {:class "flex flex-none items-center pa2 ph3 bg-light-gray"
            :style      {:box-shadow "inset 0 -0.5px 0 rgba(0, 0, 0, 0.15)"}}
      ;; Label
-     [:div {:class-name "f7 gray mr2"}
+     [:div {:class "f7 gray mr2"}
       "Template:"]
 
      ;; Select
-     [:select {:class-name "input-reset flex flex-auto bn br2 pa1 ph2 f7 bg-white outline-0"
+     [:select {:class "input-reset flex flex-auto bn br2 pa1 ph2 f7 bg-white outline-0"
                :style {:box-shadow "0 0 0 0.5px rgba(0, 0, 0, 0.07), 0 0.5px 0.5px rgba(0, 0, 0, 0.2)"}}
       (map option templates)]]))
 
@@ -134,9 +146,19 @@
   (let [queue (subscribe [:queue])
         item  (fn [index [id qty]]
                 [:li {:key index} (str id " - " qty)])]
-    [:ul {:class "flex-auto overflow-scroll list ma0 pa0 bg-light-gray"}
+    [:ul {:class "flex-auto overflow-scroll list ma0 pa0 bg-light-gray"
+          :style {:box-shadow "inset 0 -0.5px 0 rgba(0, 0, 0, 0.15)"}}
      ;; Required to invoke doall since map-indexed returns a lazy seq.
      (->> @queue (map-indexed queue-list-item) doall)]))
+
+(defn empty-queue-bar
+  "Displays empty queue button."
+  []
+  (let [empty-queue #(dispatch [:empty-queue])]
+    [:div {:class "flex flex-none items-center justify-end pa2 ph3 bg-light-gray"}
+     [:a {:class  "db pv1 pl2 f7 blue"
+          :on-click empty-queue}
+      "Clear All"]]))
 
 ;; -- Main ---------------------------------------------------------------------
 
@@ -147,10 +169,12 @@
    [:div {:class "flex flex-none flex-column w-60"}
     [filter-query-bar]
     [filter-collection-bar]
-    [labels-list]]
+    [labels-list]
+    [queue-all-filtered-bar]]
 
    ;; Right column
    [:div {:class "flex flex-auto flex-column"}
-    [queue-actions-bar]
+    [queue-actions-header-bar]
     [print-options-bar]
-    [queue-list]]])
+    [queue-list]
+    [empty-queue-bar]]])

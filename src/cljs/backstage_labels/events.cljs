@@ -222,6 +222,15 @@
        (update-in db [:queue] assoc last-index [id (+ qty latest-qty)])
        (update-in db [:queue] conj [id qty])))))
 
+;; Queues multiple labels with a common quantity at end of vector. See
+;; :queue-label event for details.
+(reg-event-db
+ :queue-labels
+ (fn [db [_ ids qty]]
+   (let [qty   (or qty 1)
+         pairs (map #(vector % qty) ids)]
+     (update-in db [:queue] concat pairs))))
+
 ;; Dequeues label at the specific index.
 (reg-event-db
  :dequeue-label
