@@ -40,27 +40,26 @@
       [:option {:key nil :value all-val} "All labels"]
       (map option @collections)]]))
 
+(defn labels-list-item-accessory-left
+  "Left accessory for label item"
+  [_]
+  [:div ":)"])
+
 (defn labels-list-item-accessory-right
   "Right accessory for label item"
   [id]
   (let [queue-label #(dispatch [:queue-label id])]
-    (fn []
+    (fn [_]
       [:a {:on-click queue-label} "Add"])))
-
-(defn labels-list-item-accessory-left
-  "Left accessory for label item"
-  []
-  [:div ":)"])
 
 (defn labels-list-item
   "Label item for labels list."
   [[id label]]
-  (let [queue-label #(dispatch [:queue-label id])]
-    [:li {:key id}
-     [label/main {:label label
-                  :accessory-left labels-list-item-accessory-left
-                  :accessory-right (labels-list-item-accessory-right id)
-                  :on-double-click queue-label}]]))
+  [:li {:key id}
+   [label/main {:label label
+                :accessory-left  labels-list-item-accessory-left
+                :accessory-right (labels-list-item-accessory-right id)
+                :on-double-click #(dispatch [:queue-label id])}]])
 
 (defn labels-list
   "List of labels."
@@ -107,19 +106,18 @@
                :style {:box-shadow "0 0 0 0.5px rgba(0, 0, 0, 0.07), 0 0.5px 0.5px rgba(0, 0, 0, 0.2)"}}
       (map option templates)]]))
 
+(defn queue-list-item-accessory-left
+  "Left accessory for queue item"
+  [qty]
+  (fn [_]
+    [:div qty]))
+
 (defn queue-list-item-accessory-right
   "Right accessory for queue item"
   [index]
   (let [dequeue-label #(dispatch [:dequeue-label index])]
-    (fn []
+    (fn [_]
       [:a {:on-click dequeue-label} "X"])))
-
-(defn queue-list-item-accessory-left
-  "Left accessory for queue item"
-  [qty]
-  (fn []
-    [:div qty]))
-
 
 (defn queue-list-item
   "Label item for queue list."
