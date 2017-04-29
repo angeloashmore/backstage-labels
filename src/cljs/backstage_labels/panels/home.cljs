@@ -11,11 +11,17 @@
   (let [query     (subscribe [:filter-query])
         resolve   #(-> % str clojure.string/trim)
         set-query #(dispatch [:set-filter-query (resolve %)])]
-    [:input {:class     "flex flex-none h3 outline-0 pa3 f3 fw3 tracked bg-light-gray bw0"
-             :style     {:box-shadow "inset 0 -0.5px 0 rgba(0, 0, 0, 0.15), inset -0.5px 0 0 rgba(0, 0, 0, 0.15)"}
-             :on-change #(set-query (-> % .-target .-value))
-             :type      "text"
-             :value     @query}]))
+    [:div {:class "flex flex-none items-stretch h3 bg-light-gray"
+           :style {:box-shadow "inset 0 -0.5px 0 rgba(0, 0, 0, 0.15), inset -0.5px 0 0 rgba(0, 0, 0, 0.15)"}}
+     ;; Icon
+     [:div {:class "flex flex-none items-center justify-center w2 mh2"}
+      [:img {:src "./images/search.svg"}]]
+
+     ;; Input
+     [:input {:class     "flex-auto db outline-0 ma0 ph0 pv3 f3 fw3 tracked bw0 bg-transparent"
+              :on-change #(set-query (-> % .-target .-value))
+              :type      "text"
+              :value     @query}]]))
 
 (defn filter-collection-bar
   "Displays list of collections to set filter."
@@ -43,7 +49,8 @@
 (defn labels-list-item-accessory-left
   "Left accessory for label item"
   [_]
-  [:div ":)"])
+  [:div {:class "flex flex-none items-center justify-center w2 mh2"}
+   [:img {:src "./images/label.svg"}]])
 
 (defn labels-list-item-accessory-right
   "Right accessory for label item"

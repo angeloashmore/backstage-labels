@@ -4,9 +4,9 @@
   [{:keys [key category metadata]}]
   (let [info (cons category (vals metadata))
         i    (atom -1)]
-    [:div {:class "flex-auto mh3"}
+    [:div {:class "flex-auto pv2"}
      [:span {:class "block pb1 f4 tracked"} key]
-     [:ul {:class "overflow-hidden nowrap pa0 f7 gray"}
+     [:ul {:class "overflow-hidden nowrap pa0 f7 silver"}
       (for [item info]
         (do
           (swap! i inc)
@@ -14,7 +14,7 @@
 
 (defn main
   [{:keys [label accessory-left accessory-right on-double-click]}]
-  [:div {:class           "flex items-center pa2 ph3"
+  [:div {:class           "flex items-center"
          :on-double-click on-double-click}
    (when-not (nil? accessory-left)
      [accessory-left {:label label}])
