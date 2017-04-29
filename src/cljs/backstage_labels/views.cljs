@@ -10,7 +10,7 @@
 
 (defn main-panel
   []
-  (let [active-panel (re-frame/subscribe [:active-panel])]
+  (let [active-panel (subscribe [:active-panel])]
     (fn []
       [:div {:class-name "flex flex-auto sans-serif us--none fsa"}
        (panels @active-panel)])))
