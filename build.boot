@@ -16,8 +16,7 @@
                  [day8.re-frame/async-flow-fx "0.0.6"]
                  [day8.re-frame/http-fx       "0.1.3"]
                  [bidi                        "2.0.16"]
-                 [kibu/pushy                  "0.3.7"]
-                 [forest                      "0.2.1"]])
+                 [kibu/pushy                  "0.3.7"]])
 
 (require
  '[adzerk.boot-cljs      :refer [cljs]]
