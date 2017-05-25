@@ -1,23 +1,35 @@
-.us--none {
-  user-select: none;
-}
-
-.fsa {
+html,
+body {
   -webkit-font-smoothing: antialiased;
 }
 
-.draggable {
-  -webkit-app-region: drag;
+html {
+  display: flex;
+  height: 100%;
 }
 
-.shadow-hairline--bottom-i {
-  box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.15);
+body {
+  display: flex;
+  flex: 1 1 auto;
 }
 
-.shadow-hairline--right-i {
-  box-shadow: inset -0.5px 0 0 rgba(0, 0, 0, 0.15);
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
 }
 
-.shadow-hairline--bottom-right-i {
-  box-shadow: inset 0 -0.5px 0 rgba(0, 0, 0, 0.15), inset -0.5px 0 0 rgba(0, 0, 0, 0.15);
+input,
+button,
+textarea,
+:focus {
+  -webkit-app-region: no-drag;
+  outline: none;
+}
+
+#app {
+  display: flex;
+  flex: 1 1 auto;
 }

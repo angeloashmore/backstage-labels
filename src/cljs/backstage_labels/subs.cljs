@@ -68,9 +68,9 @@
  :<- [:filter-collection]
  :<- [:filter-query]
  (fn [[labels collections filter-collection filter-query] _]
-   (let [allowed (get-in collections [filter-collection :label_ids] [])]
-     (if (nil? filter-collection)
-       labels
+   (if (nil? filter-collection)
+     labels
+     (let [allowed (get-in collections [filter-collection :label_ids] [])]
        (select-keys labels (map keyword allowed))))))
 
 (reg-sub
