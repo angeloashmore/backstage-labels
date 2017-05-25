@@ -3,10 +3,11 @@
             [cljs-css-modules.macro :as css-modules]
             [garden.units :as units]
             [garden.color :as color]
+            [backstage-labels.config :as config]
             [backstage-labels.components.label :as label]))
 
 (css-modules/defstyle style
-  [".container" {:background-color "#f2f2f2"
+  [".container" {:background-color (:background--secondary config/theme)
                  :box-shadow [["inset" 0 (units/px -0.5) 0 (color/rgba 0 0 0 0.15)]]
                  :flex "1 1 auto"
                  :list-style-type "none"
@@ -14,7 +15,7 @@
                  :padding 0
                  :overflow "scroll"}]
 
-  [".accessory-left" {:background-color "#fff"
+  [".accessory-left" {:background-color (:background--field config/theme)
                       :border-radius (units/px 4)
                       :box-shadow [[0 0 0 (units/px 0.5) (color/rgba 0 0 0 0.07)]
                                    [0 (units/px 0.5) (units/px 0.5) (color/rgba 0 0 0 0.2)]]

@@ -1,6 +1,7 @@
 (ns backstage-labels.components.label
   (:require [cljs-css-modules.macro :as css-modules]
-            [garden.units :as units]))
+            [garden.units :as units]
+            [backstage-labels.config :as config]))
 
 (css-modules/defstyle style
   [".container" {:align-items "center"
@@ -20,7 +21,7 @@
            :font-size (units/px 20)
            :letter-spacing (units/px 1)}]
 
-  [".metadata" {:color "#999"
+  [".metadata" {:color (:text--secondary config/theme)
                 :font-size (units/px 12)
                 :margin 0
                 :overflow "hidden"

@@ -2,11 +2,12 @@
   (:require [re-frame.core :as re-frame]
             [cljs-css-modules.macro :as css-modules]
             [garden.units :as units]
-            [garden.color :as color]))
+            [garden.color :as color]
+            [backstage-labels.config :as config]))
 
 (css-modules/defstyle style
   [".container" {:align-items "center"
-                 :background-color "#f2f2f2"
+                 :background-color (:background--secondary config/theme)
                  :box-shadow [["inset" 0 (units/px -0.5) 0 (color/rgba 0 0 0 0.15)]]
                  :display "flex"
                  :flex "none"
@@ -14,22 +15,22 @@
                  :justify-content "space-between"
                  :padding (units/px 15)}]
 
-  [".count" {:color "#7f7f7f"
+  [".count" {:color (:text--secondary config/theme)
              :font-size (units/px 14)
              :font-weight 200}]
 
-  [".button" {:background-color "#fff"
+  [".button" {:background-color (:background--field config/theme)
               :border-style "none"
               :border-radius (units/px 9999)
               :border-width 0
               :box-shadow [[0 0 0 (units/px 0.5) (color/rgba 0 0 0 0.07)]
                            [0 (units/px 0.5) (units/px 0.5) (color/rgba 0 0 0 0.2)]]
-              :color "#007aff"
+              :color (:tint config/theme)
               :font-size (units/px 14)
               :font-weight 600
               :outline 0
               :padding [[(units/px 5) (units/px 14)]]}
-   ["&:active" {:color "#0063cc"}]])
+   ["&:active" {:color (:tint--active config/theme)}]])
 
 (defn main
   "Displays queue count and print button."

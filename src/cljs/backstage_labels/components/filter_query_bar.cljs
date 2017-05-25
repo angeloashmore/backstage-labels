@@ -2,10 +2,11 @@
   (:require [re-frame.core :as re-frame]
             [cljs-css-modules.macro :as css-modules]
             [garden.units :as units]
-            [garden.color :as color]))
+            [garden.color :as color]
+            [backstage-labels.config :as config]))
 
 (css-modules/defstyle style
-  [".container" {:background-color "#f2f2f2"
+  [".container" {:background-color (:background--secondary config/theme)
                  :background-image "url(./images/search.svg)"
                  :background-position [[(units/px+ (units/px 1.5) (units/px 16)) "center"]]
                  :background-repeat "no-repeat"

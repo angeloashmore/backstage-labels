@@ -7,17 +7,17 @@
 
 (css-modules/defstyle style
   [".container" {:align-items "center"
-                 :background-color "#f2f2f2"
+                 :background-color (:background--secondary config/theme)
                  :box-shadow [["inset" 0 (units/px -0.5) 0 (color/rgba 0 0 0 0.15)]]
                  :display "flex"
                  :flex "none"
                  :padding [[(units/px 10) (units/px 15)]]}]
 
-  [".label" {:color "#7f7f7f"
+  [".label" {:color (:text--secondary config/theme)
              :font-size (units/px 12)
              :margin-right (units/px 10)}]
 
-  [".select" {:background-color "#fff"
+  [".select" {:background-color (:background--field config/theme)
               :background-image "url(./images/dropdown.svg)";
               :background-position [["right" (units/px 8) "center"]]
               :background-repeat "no-repeat"
