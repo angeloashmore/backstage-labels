@@ -40,8 +40,7 @@
 (defn item
   "Label item for labels list."
   [[id label]]
-  [:li {:key id
-        :class (:item style)}
+  [:li {:key id}
    [label/main {:label label
                 :accessory-left  accessory-left
                 :accessory-right (accessory-right id)

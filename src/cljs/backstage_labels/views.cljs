@@ -19,6 +19,5 @@
   []
   (let [active-panel (subscribe [:active-panel])]
     (fn []
-      ;; Set cursor to pointer to simulate a native app.
       [:div {:class (:container style)}
        (panels @active-panel)])))

@@ -1,13 +1,11 @@
-(ns backstage-labels.components.queue-all-filtered-bar
+(ns backstage-labels.components.empty-queue-bar
   (:require [re-frame.core :as re-frame]
             [cljs-css-modules.macro :as css-modules]
-            [garden.units :as units]
-            [garden.color :as color]))
+            [garden.units :as units]))
 
 (css-modules/defstyle style
   [".container" {:align-items "center"
                  :background-color "#f2f2f2"
-                 :box-shadow [["inset" (units/px -0.5) 0 0 (color/rgba 0 0 0 0.15)]]
                  :display "flex"
                  :flex "none"
                  :justify-content "flex-end"
@@ -19,12 +17,10 @@
    ["&:active" {:color "#0063cc"}]])
 
 (defn main
-  "Displays queue all filtered labels button."
+  "Displays empty queue button."
   []
-  (let [labels    (re-frame/subscribe [:labels-filtered])
-        ids       (keys @labels)
-        queue-all #(re-frame/dispatch [:queue-labels ids])]
+  (let [empty-queue #(re-frame/dispatch [:empty-queue])]
     [:div {:class (:container style)}
      [:a {:class (:button style)
-          :on-click queue-all}
-      "Add All Visible"]]))
+          :on-click empty-queue}
+      "Clear All"]]))

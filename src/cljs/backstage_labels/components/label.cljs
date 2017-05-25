@@ -1,7 +1,6 @@
 (ns backstage-labels.components.label
   (:require [cljs-css-modules.macro :as css-modules]
-            [garden.units :as units]
-            [garden.color :as color]))
+            [garden.units :as units]))
 
 (css-modules/defstyle style
   [".container" {:align-items "center"
@@ -50,12 +49,15 @@
 
 (defn main
   [{:keys [label accessory-left accessory-right on-double-click]}]
-  [:div {:class           (:container style)
+  [:div {:class (:container style)
          :on-double-click on-double-click}
+
    (when-not (nil? accessory-left)
      [:div {:class (:accessory-left style)}
       [accessory-left {:label label}]])
+
    [details label]
+
    (when-not (nil? accessory-right)
      [:div {:class (:accessory-right style)}
       [accessory-right {:label label}]])])
