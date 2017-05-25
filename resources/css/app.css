@@ -1,16 +1,11 @@
 html,
 body {
-  -webkit-font-smoothing: antialiased;
-}
-
-html {
-  display: flex;
   height: 100%;
 }
 
 body {
-  display: flex;
-  flex: 1 1 auto;
+  font-family: system, -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Lucida Grande";
+  -webkit-font-smoothing: antialiased;
 }
 
 :not(input):not(textarea),
@@ -30,6 +25,5 @@ textarea,
 }
 
 #app {
-  display: flex;
-  flex: 1 1 auto;
+  height: 100%;
 }

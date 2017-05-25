@@ -31,6 +31,7 @@
                       :frame false
                       :autoHideMenuBar true
                       :webPreferences {:nodeIntegration false
+                                       :experimentalFeatures true
                                        :scrollBounce true}))
   (.loadURL @main-window index-url)
   (when dev?

@@ -1,17 +1,17 @@
 (ns backstage-labels.components.labels-list
   (:require [re-frame.core :as re-frame]
-            [cljs-css-modules.macro :as css-modules]
+            [cljs-css-modules.macro :refer-macros [defstyle]]
             [garden.units :as units]
             [garden.color :as color]
             [backstage-labels.components.label :as label]))
 
-(css-modules/defstyle style
+(defstyle style
   [".container" {:box-shadow [["inset" 0 (units/px -0.5) 0 (color/rgba 0 0 0 0.15)]
                               ["inset" (units/px -0.5) 0 0 (color/rgba 0 0 0 0.15)]]
-                 :flex "1 1 auto"
                  :list-style-type "none"
                  :margin 0
-                 :overflow "scroll"
+                 :overflow-y "scroll"
+                 :overflow-x "hidden"
                  :padding 0}]
 
   [".accessory-left" {:margin-left (units/px+ (units/px 1.5) (units/px 4.5))

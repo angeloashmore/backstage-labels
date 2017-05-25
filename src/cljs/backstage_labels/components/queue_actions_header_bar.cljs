@@ -1,23 +1,21 @@
 (ns backstage-labels.components.queue-actions-header-bar
   (:require [re-frame.core :as re-frame]
-            [cljs-css-modules.macro :as css-modules]
+            [cljs-css-modules.macro :refer-macros [defstyle]]
             [garden.units :as units]
             [garden.color :as color]
             [backstage-labels.config :as config]))
 
-(css-modules/defstyle style
+(defstyle style
   [".container" {:align-items "center"
                  :background-color (:background--secondary config/theme)
                  :box-shadow [["inset" 0 (units/px -0.5) 0 (color/rgba 0 0 0 0.15)]]
                  :display "flex"
                  :flex "none"
-                 :height (units/px 56)
                  :justify-content "space-between"
                  :padding (units/px 15)}]
 
   [".count" {:color (:text--secondary config/theme)
-             :font-size (units/px 14)
-             :font-weight 200}]
+             :font-size (units/px 14)}]
 
   [".button" {:background-color (:background--field config/theme)
               :border-style "none"
@@ -30,7 +28,8 @@
               :font-weight 600
               :outline 0
               :padding [[(units/px 5) (units/px 14)]]}
-   ["&:active" {:color (:tint--active config/theme)}]])
+   ["&:active" {:color (:tint--active config/theme)}]
+   ["&:disabled" {:color (:text--secondary config/theme)}]])
 
 (defn main
   "Displays queue count and print button."
@@ -42,5 +41,6 @@
       (str @queue-count " label" (when (not= @queue-count 1) "s"))]
 
      ;; Print button
-     [:button {:class (:button style)}
+     [:button {:class (:button style)
+               :disabled (< @queue-count 1)}
       "Print"]]))

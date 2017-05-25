@@ -1,11 +1,11 @@
 (ns backstage-labels.components.queue-all-filtered-bar
   (:require [re-frame.core :as re-frame]
-            [cljs-css-modules.macro :as css-modules]
+            [cljs-css-modules.macro :refer-macros [defstyle]]
             [garden.units :as units]
             [garden.color :as color]
             [backstage-labels.config :as config]))
 
-(css-modules/defstyle style
+(defstyle style
   [".container" {:align-items "center"
                  :background-color (:background--secondary config/theme)
                  :box-shadow [["inset" (units/px -0.5) 0 0 (color/rgba 0 0 0 0.15)]]

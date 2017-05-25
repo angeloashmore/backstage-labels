@@ -1,10 +1,10 @@
 (ns backstage-labels.components.empty-queue-bar
   (:require [re-frame.core :as re-frame]
-            [cljs-css-modules.macro :as css-modules]
+            [cljs-css-modules.macro :refer-macros [defstyle]]
             [garden.units :as units]
             [backstage-labels.config :as config]))
 
-(css-modules/defstyle style
+(defstyle style
   [".container" {:align-items "center"
                  :background-color (:background--secondary config/theme)
                  :display "flex"

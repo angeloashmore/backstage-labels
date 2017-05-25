@@ -1,13 +1,12 @@
 (ns backstage-labels.components.label
-  (:require [cljs-css-modules.macro :as css-modules]
+  (:require [cljs-css-modules.macro :refer-macros [defstyle]]
             [garden.units :as units]
             [backstage-labels.config :as config]))
 
-(css-modules/defstyle style
+(defstyle style
   [".container" {:align-items "center"
                  :display "flex"
-                 :padding [[(units/px 10) (units/px 15)]]
-                 :width (units/percent 100)}]
+                 :padding [[(units/px 10) (units/px 15)]]}]
 
   [".accessory-left" {:flex "none"
                       :margin-right (units/px 15)}]
@@ -15,7 +14,8 @@
   [".accessory-right" {:flex "none"
                        :margin-left (units/px 15)}]
 
-  [".details" {:flex "1 1 auto"}]
+  [".details" {:flex "1 1 auto"
+               :overflow "hidden"}]
 
   [".key" {:display "block"
            :font-size (units/px 20)

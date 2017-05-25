@@ -1,5 +1,5 @@
 (ns backstage-labels.panels.home
-  (:require [cljs-css-modules.macro :as css-modules]
+  (:require [cljs-css-modules.macro :refer-macros [defstyle]]
             [garden.units :as units]
 
             ;; Left Column
@@ -14,30 +14,23 @@
             [backstage-labels.components.queue-list :as queue-list]
             [backstage-labels.components.empty-queue-bar :as empty-queue-bar]))
 
-(css-modules/defstyle style
-  [".container" {:display "flex"}]
-
-  [".left-column" {:display "flex"
-                   :flex-direction "column"
-                   :width (units/percent 60)}]
-
-  [".right-column" {:display "flex"
-                    :flex-direction "column"
-                    :width (units/percent 40)}])
+(defstyle style
+  [".container" {:display "grid"
+                 :grid-template-rows [["auto" "auto" "minmax(0, 1fr)" "auto"]]
+                 :grid-template-columns [["minmax(0, 2fr)" "minmax(250px, 1fr)"]]
+                 :height (units/vh 100)}])
 
 (defn main
   []
   [:div {:class (:container style)}
-   ;; Left column
-   [:div {:class (:left-column style)}
-    [filter-query-bar/main]
-    [filter-collection-bar/main]
-    [labels-list/main]
-    [queue-all-filtered-bar/main]]
+   [filter-query-bar/main]
+   [queue-actions-header-bar/main]
 
-   ;; Right column
-   [:div {:class (:right-column style)}
-    [queue-actions-header-bar/main]
-    [print-options-bar/main]
-    [queue-list/main]
-    [empty-queue-bar/main]]])
+   [filter-collection-bar/main]
+   [print-options-bar/main]
+
+   [labels-list/main]
+   [queue-list/main]
+
+   [queue-all-filtered-bar/main]
+   [empty-queue-bar/main]])
