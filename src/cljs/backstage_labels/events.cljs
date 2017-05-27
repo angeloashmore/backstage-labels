@@ -1,5 +1,6 @@
 (ns backstage-labels.events
-  (:require [re-frame.core :as re-frame :refer [reg-event-db reg-event-fx]]
+  (:require [clojure.string :as string]
+            [re-frame.core :as re-frame :refer [reg-event-db reg-event-fx]]
             [day8.re-frame.async-flow-fx]
             [day8.re-frame.http-fx]
             [ajax.core :as ajax]
@@ -133,9 +134,15 @@
 (reg-event-db
  :request-collections-success
  (fn [db [_ collections]]
-   (let [zipped (zipmap (map #(-> % :id keyword) collections) collections)]
+   (let [normalize  (fn [collection]
+                      (update-in collection [:label_ids] #(->> % (map keyword) set)))
+         zipped     (zipmap (map #(-> % :id keyword) collections)
+                            (map normalize collections))
+         comparator #(compare [(string/lower-case (get-in zipped [%1 :key])) %1]
+                              [(string/lower-case (get-in zipped [%2 :key])) %1])
+         sorted     (into (sorted-map-by comparator) zipped)]
      (-> db
-         (assoc :collections zipped)
+         (assoc :collections sorted)
          (assoc :collections-loading false)))))
 
 ;; Sets the whole app as failed.
@@ -169,9 +176,12 @@
 (reg-event-db
  :request-labels-success
  (fn [db [_ labels]]
-   (let [zipped (zipmap (map #(-> % :id keyword) labels) labels)]
+   (let [zipped     (zipmap (map #(-> % :id keyword) labels) labels)
+         comparator #(compare [(string/lower-case (get-in zipped [%1 :key])) %1]
+                              [(string/lower-case (get-in zipped [%2 :key])) %1])
+         sorted     (into (sorted-map-by comparator) zipped)]
     (-> db
-        (assoc :labels zipped)
+        (assoc :labels sorted)
         (assoc :labels-loading false)))))
 
 ;; Sets the whole app as failed.
@@ -187,11 +197,13 @@
 
 (reg-event-db
  :set-filter-collection
+ [re-frame/debug]
  (fn [db [_ id]]
    (assoc db :filter-collection id)))
 
 (reg-event-db
  :set-filter-query
+ [re-frame/debug]
  (fn [db [_ query]]
    (assoc db :filter-query query)))
 

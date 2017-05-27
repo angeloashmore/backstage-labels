@@ -1,5 +1,6 @@
 (ns backstage-labels.subs
-  (:require [re-frame.core :as re-frame :refer [reg-sub]]))
+  (:require [clojure.string :as string]
+            [re-frame.core :as re-frame :refer [reg-sub]]))
 
 (reg-sub
  :failed
@@ -68,10 +69,15 @@
  :<- [:filter-collection]
  :<- [:filter-query]
  (fn [[labels collections filter-collection filter-query] _]
-   (if (nil? filter-collection)
-     labels
-     (let [allowed (get-in collections [filter-collection :label_ids] [])]
-       (select-keys labels (map keyword allowed))))))
+   (let [allowed-ids     (if-some [id filter-collection]
+                           (get-in collections [id :label_ids] #{})
+                           #{})
+         collection-pred #(contains? allowed-ids (key %))
+         query-pred      #(string/includes? (-> % val str string/lower-case)
+                                            filter-query)]
+     (cond->> labels
+       (some? filter-collection) (filter collection-pred)
+       (some? filter-query)      (filter query-pred)))))
 
 (reg-sub
  :label

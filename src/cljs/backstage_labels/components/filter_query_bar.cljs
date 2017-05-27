@@ -1,5 +1,6 @@
 (ns backstage-labels.components.filter-query-bar
-  (:require [re-frame.core :as re-frame]
+  (:require [clojure.string :as string]
+            [re-frame.core :as re-frame]
             [cljs-css-modules.macro :refer-macros [defstyle]]
             [garden.units :as units]
             [garden.color :as color]
@@ -29,7 +30,7 @@
   "Displays query filter input."
   []
   (let [query     (re-frame/subscribe [:filter-query])
-        resolve   #(-> % str clojure.string/trim)
+        resolve   #(if (string/blank? %) nil %)
         set-query #(re-frame/dispatch [:set-filter-query (resolve %)])]
     [:div {:class (:container style)}
      [:input {:id        "filter-query"
