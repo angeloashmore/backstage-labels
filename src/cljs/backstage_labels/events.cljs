@@ -139,7 +139,7 @@
          zipped     (zipmap (map #(-> % :id keyword) collections)
                             (map normalize collections))
          comparator #(compare [(string/lower-case (get-in zipped [%1 :key])) %1]
-                              [(string/lower-case (get-in zipped [%2 :key])) %1])
+                              [(string/lower-case (get-in zipped [%2 :key])) %2])
          sorted     (into (sorted-map-by comparator) zipped)]
      (-> db
          (assoc :collections sorted)
@@ -178,7 +178,7 @@
  (fn [db [_ labels]]
    (let [zipped     (zipmap (map #(-> % :id keyword) labels) labels)
          comparator #(compare [(string/lower-case (get-in zipped [%1 :key])) %1]
-                              [(string/lower-case (get-in zipped [%2 :key])) %1])
+                              [(string/lower-case (get-in zipped [%2 :key])) %2])
          sorted     (into (sorted-map-by comparator) zipped)]
     (-> db
         (assoc :labels sorted)
