@@ -197,13 +197,11 @@
 
 (reg-event-db
  :set-filter-collection
- [re-frame/debug]
  (fn [db [_ id]]
    (assoc db :filter-collection id)))
 
 (reg-event-db
  :set-filter-query
- [re-frame/debug]
  (fn [db [_ query]]
    (assoc db :filter-query query)))
 
