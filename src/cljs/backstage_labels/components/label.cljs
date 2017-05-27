@@ -29,7 +29,7 @@
                 :text-overflow "ellipsis"
                 :white-space "nowrap"}]
 
-  [".metadata-item" {:display "inline-block"
+  [".metadata-item" {:display "inline block"
                      :margin-right (units/px 8)
                      :overflow "hidden"
                      :text-overflow "ellipsis"
