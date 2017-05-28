@@ -69,9 +69,8 @@
  :<- [:filter-collection]
  :<- [:filter-query]
  (fn [[labels collections filter-collection filter-query] _]
-   (let [allowed-ids     (if-some [id filter-collection]
-                           (get-in collections [id :label_ids] #{})
-                           #{})
+   (let [allowed-ids     (when-some [id filter-collection]
+                           (get-in collections [id :label_ids] #{}))
          collection-pred #(contains? allowed-ids (key %))
          query-pred      #(string/includes? (-> % val str string/lower-case)
                                             filter-query)]
