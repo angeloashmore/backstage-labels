@@ -16,7 +16,7 @@
               :font-size (units/px 12)
               :padding-bottom (units/px 4)
               :padding-left (units/px 8)
-              :padding-right (units/px+ (units/px 8) (units/px 9) (units/px 8))
+              :padding-right (units/px+ (units/px 6) (units/px 9) (units/px 8))
               :padding-top (units/px 4)
               :outline 0}]
 
