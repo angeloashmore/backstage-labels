@@ -30,8 +30,7 @@
           (new-window 600 750
                       :frame false
                       :autoHideMenuBar true
-                      :webPreferences {:nodeIntegration false
-                                       :experimentalFeatures true
+                      :webPreferences {:experimentalFeatures true
                                        :scrollBounce true}))
   (.loadURL @main-window index-url)
   (when dev?
