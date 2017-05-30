@@ -30,15 +30,14 @@
   labels button."
   []
   (let [release-tags    (re-frame/subscribe [:release-tags])
-        labels          (re-frame/subscribe [:labels-filtered])
-        ids             (keys @labels)
+        labels-filtered (re-frame/subscribe [:labels-filtered])
         set-release-tag #(re-frame/dispatch [:set-release-tag %])
-        queue-all       #(re-frame/dispatch [:queue-labels ids])]
+        queue-labels    #(re-frame/dispatch [:queue-labels %])]
     [:div {:class (:container style)}
      [:div
-      [form/select {:class (:release-tags style)
+      [form/select {:class     (:release-tags style)
                     :on-change #(set-release-tag (-> % .-target .-value))}
        (map release-tag-option @release-tags)]]
-     [:a {:class (:button style)
-          :on-click queue-all}
+     [:a {:class    (:button style)
+          :on-click #(-> @labels-filtered keys queue-labels)}
       "Add All Visible"]]))
