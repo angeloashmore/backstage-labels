@@ -1,5 +1,6 @@
 (ns backstage-labels.components.labels-list
-  (:require [re-frame.core :as re-frame]
+  (:require [goog.string :as gstring]
+            [re-frame.core :as re-frame]
             [cljs-css-modules.macro :refer-macros [defstyle]]
             [garden.units :as units]
             [garden.color :as color]
@@ -8,11 +9,17 @@
 (defstyle style
   [".container" {:box-shadow [["inset" 0 (units/px -0.5) 0 (color/rgba 0 0 0 0.15)]
                               ["inset" (units/px -0.5) 0 0 (color/rgba 0 0 0 0.15)]]
-                 :list-style-type "none"
-                 :margin 0
                  :overflow-y "scroll"
-                 :overflow-x "hidden"
-                 :padding 0}]
+                 :overflow-x "hidden"}]
+
+  [".loading" {:align-items "center"
+               :display "flex"
+               :height (units/percent 100)
+               :justify-content "center"}]
+
+  [".labels" {:list-style-type "none"
+              :margin 0
+              :padding 0}]
 
   [".accessory-left" {:margin-left (units/px+ (units/px 1.5) (units/px 4.5))
                       :margin-right (units/px 4.5)}]
@@ -49,6 +56,11 @@
 (defn main
   "List of labels."
   []
-  (let [filtered-labels (re-frame/subscribe [:labels-filtered])]
-    [:ul {:class (:container style)}
-     (map item @filtered-labels)]))
+  (let [labels-loading  (re-frame/subscribe [:labels-loading])
+        filtered-labels (re-frame/subscribe [:labels-filtered])]
+    [:div {:class (:container style)}
+     (if @labels-loading
+       [:div {:class (:loading style)}
+        "Loading" (gstring/unescapeEntities "&hellip;")]
+       [:ul {:class (:labels style)}
+        (map item @filtered-labels)])]))
