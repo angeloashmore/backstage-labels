@@ -239,7 +239,7 @@
  (fn [db [_ ids qty]]
    (let [qty   (or qty 1)
          pairs (map #(vector % qty) ids)]
-     (update-in db [:queue] concat pairs))))
+     (update-in db [:queue] #(-> % (concat pairs) vec)))))
 
 ;; Dequeues label at the specific index.
 (reg-event-db
