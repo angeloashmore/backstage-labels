@@ -6,7 +6,7 @@
             [backstage-labels.components.filter-query-bar :as filter-query-bar]
             [backstage-labels.components.filter-collection-bar :as filter-collection-bar]
             [backstage-labels.components.labels-list :as labels-list]
-            [backstage-labels.components.queue-all-filtered-bar :as queue-all-filtered-bar]
+            [backstage-labels.components.labels-list-actions-bar :as labels-list-actions-bar]
 
             ;; Right Column
             [backstage-labels.components.queue-actions-header-bar :as queue-actions-header-bar]
@@ -32,5 +32,5 @@
    [labels-list/main]
    [queue-list/main]
 
-   [queue-all-filtered-bar/main]
+   [labels-list-actions-bar/main]
    [empty-queue-bar/main]])
