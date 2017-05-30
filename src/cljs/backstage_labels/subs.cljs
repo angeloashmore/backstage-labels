@@ -71,9 +71,14 @@
  (fn [[labels collections filter-collection filter-query] _]
    (let [allowed-ids     (when-some [id filter-collection]
                            (get-in collections [id :label_ids] #{}))
+         ;; Replace spaces with repeat wildcards for better UX
+         query-regexp    (-> (str "(?i)" filter-query)
+                             (string/replace " " ".*")
+                             re-pattern)
          collection-pred #(contains? allowed-ids (key %))
-         query-pred      #(string/includes? (-> % val str string/lower-case)
-                                            filter-query)]
+         query-pred      #(->> % val str
+                               (re-find query-regexp)
+                               empty? not)]
      (cond->> labels
        (some? filter-collection) (filter collection-pred)
        (some? filter-query)      (filter query-pred)))))
