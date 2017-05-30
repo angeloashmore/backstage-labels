@@ -23,12 +23,14 @@
             :events   :set-release-tags
             :dispatch [:set-release-tag :latest]}]})
 
-;; Sets the default app-db and fires off the boot flow.
+;; Sets the default app-db, selects the filter query input, and fires off the
+;; boot flow.
 (reg-event-fx
  :boot
  (fn [_ _]
    {:db         db/default-db
-    :async-flow (boot-flow)}))
+    :async-flow (boot-flow)
+    :dispatch   [:select-filter-query-input]}))
 
 ;; -- Routing ------------------------------------------------------------------
 
@@ -221,38 +223,50 @@
 ;; Queue items are stored in a two element vector:
 ;;
 ;;   [label-id qty]
-(reg-event-db
+;;
+;; Filter query input is selected to assist in queuing the next label.
+(reg-event-fx
  :queue-label
- (fn [db [_ id qty]]
+ (fn [{db :db} [_ id qty]]
    (let [qty                    (or qty 1)
          queue                  (:queue db)
          [latest-id latest-qty] (peek queue)
          last-index             (-> queue count dec)]
-     (if (= id latest-id)
-       (update-in db [:queue] assoc last-index [id (+ qty latest-qty)])
-       (update-in db [:queue] conj [id qty])))))
+     {:db       (if (= id latest-id)
+                  (update-in db [:queue] assoc last-index [id (+ qty latest-qty)])
+                  (update-in db [:queue] conj [id qty]))
+      :dispatch [:select-filter-query-input]})))
 
 ;; Queues multiple labels with a common quantity at end of vector. See
 ;; :queue-label event for details.
-(reg-event-db
+;;
+;; Filter query input is selected to assist in queuing the next label.
+(reg-event-fx
  :queue-labels
- (fn [db [_ ids qty]]
+ (fn [{db :db} [_ ids qty]]
    (let [qty   (or qty 1)
          pairs (map #(vector % qty) ids)]
-     (update-in db [:queue] #(-> % (concat pairs) vec)))))
+     {:db       (update-in db [:queue] #(-> % (concat pairs) vec))
+      :dispatch [:select-filter-query-input]})))
 
 ;; Dequeues label at the specific index.
-(reg-event-db
+;;
+;; Filter query input is selected to assist in queuing the next label.
+(reg-event-fx
  :dequeue-label
- (fn [db [_ index]]
-   (update-in db [:queue] #(vec (concat (subvec % 0 index)
-                                        (subvec % (inc index)))))))
+ (fn [{db :db} [_ index]]
+   {:db       (update-in db [:queue] #(vec (concat (subvec % 0 index)
+                                                   (subvec % (inc index)))))
+    :dispatch [:select-filter-query-input]}))
 
 ;; Removes all queued labels.
-(reg-event-db
+;;
+;; Filter query input is selected to assist in queuing the next label.
+(reg-event-fx
  :empty-queue
- (fn [db _]
-   (assoc db :queue (-> db :queue empty))))
+ (fn [{db :db} _]
+   {:db       (assoc db :queue (-> db :queue empty))
+    :dispatch [:select-filter-query-input]}))
 
 ;; Sets the quantity of a queued label at the specified index.
 (reg-event-db
@@ -260,3 +274,11 @@
  (fn [db [_ index qty]]
    (let [[id _] (nth (:queue db) index)]
      (update-in db [:queue] assoc index [id qty]))))
+
+;; -- Miscellaneous ------------------------------------------------------------
+
+;; Focuses the filter query input.
+(reg-event-fx
+ :select-filter-query-input
+ (fn [_ _]
+   {:select-element config/filter-query-id}))

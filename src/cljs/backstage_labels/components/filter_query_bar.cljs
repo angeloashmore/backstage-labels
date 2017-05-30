@@ -33,7 +33,7 @@
         resolve   #(if (string/blank? %) nil %)
         set-query #(re-frame/dispatch [:set-filter-query (resolve %)])]
     [:div {:class (:container style)}
-     [:input {:id        "filter-query"
+     [:input {:id        config/filter-query-id
               :class     (:input style)
               :type      "text"
               :value     @query

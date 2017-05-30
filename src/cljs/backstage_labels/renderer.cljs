@@ -1,6 +1,7 @@
 (ns backstage-labels.renderer
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
+            [backstage-labels.effects]
             [backstage-labels.events]
             [backstage-labels.subs]
             [backstage-labels.routes :as routes]
