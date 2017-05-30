@@ -18,7 +18,7 @@
   [".container" {:display "grid"
                  :grid-template-rows [["auto" "auto" "minmax(0, 1fr)" "auto"]]
                  :grid-template-columns [["minmax(0, 2fr)" "minmax(250px, 1fr)"]]
-                 :height (units/vh 100)}])
+                 :height (units/percent 100)}])
 
 (defn main
   []
