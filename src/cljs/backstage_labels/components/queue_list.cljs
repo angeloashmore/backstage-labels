@@ -32,10 +32,12 @@
 
 (defn accessory-left
   "Left accessory for queue item"
-  [qty]
-  (fn [_]
-    [:input {:class (:accessory-left style)
-             :value qty}]))
+  [index qty]
+  (let [set-queue-qty #(re-frame/dispatch [:set-queue-qty index %])]
+    (fn [_]
+      [:input {:class (:accessory-left style)
+               :on-change #(set-queue-qty (-> % .-target .-value int))
+               :value qty}])))
 
 (defn accessory-right
   "Right accessory for queue item"
@@ -52,7 +54,7 @@
   (let [label (re-frame/subscribe [:label id])]
     [:li {:key index}
      [label/main {:label @label
-                  :accessory-left (accessory-left qty)
+                  :accessory-left (accessory-left index qty)
                   :accessory-right (accessory-right index)}]]))
 
 (defn main
